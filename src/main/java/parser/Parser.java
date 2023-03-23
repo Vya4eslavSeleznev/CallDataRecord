@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Parser {
 
-    private static final String URL = "C://University//Repositories//CallDataRecord//src//main//java//data//cdr.txt";
+    private static final String URL = "src//main//java//data//cdr.txt";//"C://University//Repositories//CallDataRecord//src//main//java//data//cdr.txt";
 
     public List<UserInfoModel> findUserInfo(String phoneNumber) throws IOException {
         BufferedReader reader = Files.newBufferedReader(
@@ -57,7 +57,7 @@ public class Parser {
             throw new RuntimeException("Failed to parse date: ", e);
         }
 
-        return Math.ceil(getDateDiff(dateFrom, dateTo) / 60.0);
+        return getDateDiff(dateFrom, dateTo);
     }
 
     private double getDateDiff(Date dateFrom, Date dateTo) {
