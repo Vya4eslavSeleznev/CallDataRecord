@@ -2,31 +2,20 @@ package model;
 
 import java.util.Date;
 
-public class UserInfoModel {
+public class ReportModel {
 
-    private String phoneNumber;
     private String callType;
     private Date startDate;
     private Date endDate;
     private double duration;
-    private String rate;
+    private double cost;
 
-    public UserInfoModel(String phoneNumber, String callType, Date startDate, Date endDate, double duration,
-                         String rate) {
-        this.phoneNumber = phoneNumber;
+    public ReportModel(String callType, Date startDate, Date endDate, double duration, double cost) {
         this.callType = callType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.duration = duration;
-        this.rate = rate;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+        this.cost = cost;
     }
 
     public String getCallType() {
@@ -61,11 +50,11 @@ public class UserInfoModel {
         this.duration = duration;
     }
 
-    public String getRate() {
-        return rate;
+    public double getCost() {
+        return cost;
     }
 
-    public void setRate(String rate) {
-        this.rate = rate;
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }

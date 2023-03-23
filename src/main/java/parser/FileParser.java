@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Parser {
+public class FileParser {
 
     private static final String URL = "src//main//java//data//cdr.txt";
 
@@ -29,6 +29,7 @@ public class Parser {
                 Date endDate = stringToDate(currentLine.substring(33, 47));
 
                 userInfo.add(new UserInfoModel(
+                  phoneNumber,
                   currentLine.substring(0, 2),
                   startDate,
                   endDate,
