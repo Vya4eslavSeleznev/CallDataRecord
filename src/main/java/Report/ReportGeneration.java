@@ -1,5 +1,6 @@
 package Report;
 
+import calculation.RateCalculation;
 import model.ReportModel;
 import model.UserInfoModel;
 
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportGeneration {
+
+    private static final double PRECISION = 1000;
 
     private List<UserInfoModel> userInfo;
     private List<ReportModel> reportInfo;
@@ -31,6 +34,9 @@ public class ReportGeneration {
 
     public void generate() {
         createReportList();
+        RateCalculation rateCalculation = new RateCalculation();
+        List<Double> costs = rateCalculation.basicCalculation(userInfo);
+
         System.out.println(
           "Tariff index: " + userInfo.get(0).getRate() + "\n" +
           "----------------------------------------------------------------------------\n" +
@@ -40,13 +46,23 @@ public class ReportGeneration {
           "----------------------------------------------------------------------------\n"
         );
 
-        for(ReportModel reportModel : reportInfo) {
+//        for(ReportModel reportModel : reportInfo) {
+//            System.out.println(
+//              "|\t" + reportModel.getCallType() + "\t" +
+//              "|\t" + reportModel.getStartDate() + "\t" +
+//              "|\t" + reportModel.getEndDate() + "\t" +
+//              "|\t" + reportModel.getDuration() + "\t" +
+//              "|\t" + reportModel.getCost() + "\t|"
+//            );
+//        }
+
+        for(int i = 0; i < userInfo.size(); i++) {
             System.out.println(
-              "|\t" + reportModel.getCallType() + "\t" +
-              "|\t" + reportModel.getStartDate() + "\t" +
-              "|\t" + reportModel.getEndDate() + "\t" +
-              "|\t" + reportModel.getDuration() + "\t" +
-              "|\t" + reportModel.getCost() + "\t|"
+              "|\t" + reportInfo.get(i).getCallType() + "\t" +
+                "|\t" + reportInfo.get(i).getStartDate() + "\t" +
+                "|\t" + reportInfo.get(i).getEndDate() + "\t" +
+                "|\t" + reportInfo.get(i).getDuration() + "\t" +
+                "|\t" + Math.round(costs.get(i) * PRECISION) / PRECISION + "\t|"
             );
         }
 
