@@ -1,4 +1,4 @@
-package Report;
+package report;
 
 import calculation.RateCalculation;
 import model.UserInfoModel;
@@ -46,11 +46,14 @@ public class ReportGeneration {
         }
 
         sb.append("Tariff index: ").append(userInfo.get(0).getRate()).append("\n");
-        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("-------------------------------------------------------------------------");
+        sb.append("------------------------------------------------------------------------\n");
         sb.append("Report for phone number ").append(userInfo.get(0).getPhoneNumber()).append(":\n");
-        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-        sb.append("| Call Type |\t\t\tStart Time\t\t\t\t|\t\t\tEnd Time\t\t\t\t|\tDuration\t|\tCost\t|\n");
-        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("-------------------------------------------------------------------------");
+        sb.append("------------------------------------------------------------------------\n");
+        sb.append("|\tCall Type\t|\t\tStart Time\t\t|\tEnd Time\t\t\t|\tDuration\t|\tCost\t|\n");
+        sb.append("-------------------------------------------------------------------------");
+        sb.append("------------------------------------------------------------------------\n");
 
         for(int i = 0; i < userInfo.size(); i++) {
             Duration duration = Duration.ofMillis(userInfo.get(i).getDuration() * 1000);
@@ -67,11 +70,13 @@ public class ReportGeneration {
           .mapToDouble(Double::doubleValue)
           .sum();
 
-        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-        sb.append("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTotal Cost: |\t\t\t")
+        sb.append("-------------------------------------------------------------------------");
+        sb.append("------------------------------------------------------------------------\n");
+        sb.append("|\t\t\t\t\t\t\t\t\t\t\t    Total Cost: |\t\t\t")
           .append(Math.round(totalCost * PRECISION) / PRECISION).append(" rubles \t|\n");
-        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
-        sb.append("\t\t\tPowered by Vyacheslav Seleznev");
+        sb.append("-------------------------------------------------------------------------");
+        sb.append("------------------------------------------------------------------------\n");
+        sb.append("\t\t\t/Powered by Vyacheslav Seleznev/");
 
         return sb;
     }

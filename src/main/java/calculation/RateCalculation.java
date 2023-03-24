@@ -25,7 +25,7 @@ public class RateCalculation {
         return (seconds * PER_MINUTE_PRICE) / 60;
     }
 
-    private double basic(double seconds, boolean higherThanLimit) {
+    private double basicRate(double seconds, boolean higherThanLimit) {
         if(!higherThanLimit)
             return (seconds * BASIC_PRICE) / (LIMIT_TIME_FOR_BASIC * 60);
 
@@ -64,7 +64,7 @@ public class RateCalculation {
                 higherThanLimit = true;
 
             double duration = userInfoModel.getDuration();
-            costs.add(basic(duration, higherThanLimit));
+            costs.add(basicRate(duration, higherThanLimit));
             totalDuration += duration;
         }
 

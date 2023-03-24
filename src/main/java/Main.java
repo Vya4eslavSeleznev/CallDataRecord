@@ -1,4 +1,4 @@
-import Report.ReportGeneration;
+import report.ReportGeneration;
 
 public class Main {
 
