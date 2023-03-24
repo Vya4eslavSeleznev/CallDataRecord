@@ -1,75 +1,95 @@
 package Report;
 
 import calculation.RateCalculation;
-import model.ReportModel;
 import model.UserInfoModel;
+import parser.FileParser;
 
-import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 public class ReportGeneration {
 
     private static final double PRECISION = 1000;
+    private static final String URL = "reports/report.txt";
 
     private List<UserInfoModel> userInfo;
-    private List<ReportModel> reportInfo;
 
-    public ReportGeneration(List<UserInfoModel> userInfo) {
-        this.userInfo = userInfo;
-    }
-
-    private void createReportList() {
-        reportInfo = new ArrayList<>();
-
-        for(int i = 0; i < userInfo.size(); i++) {
-            reportInfo.add(new ReportModel(
-              userInfo.get(i).getCallType(),
-              userInfo.get(i).getStartDate(),
-              userInfo.get(i).getEndDate(),
-              userInfo.get(i).getDuration(),
-              0
-            ));
+    public ReportGeneration(String phoneNumber) {
+        try {
+            this.userInfo = new FileParser().findUserInfo(phoneNumber);
+        }
+        catch(IOException e) {
+            System.out.println("Invalid file path :(");
         }
     }
 
-    public void generate() {
-        createReportList();
-        RateCalculation rateCalculation = new RateCalculation();
-        List<Double> costs = rateCalculation.basicCalculation(userInfo);
+    public StringBuilder prepareData(String rate) {
+        StringBuilder sb = new StringBuilder();
+        List<Double> costs;
 
-        System.out.println(
-          "Tariff index: " + userInfo.get(0).getRate() + "\n" +
-          "----------------------------------------------------------------------------\n" +
-          "Report for phone number " + userInfo.get(0).getPhoneNumber() + ":\n" +
-          "----------------------------------------------------------------------------\n" +
-          "| Call Type |   Start Time        |     End Time        | Duration | Cost  |\n" +
-          "----------------------------------------------------------------------------\n"
-        );
-
-//        for(ReportModel reportModel : reportInfo) {
-//            System.out.println(
-//              "|\t" + reportModel.getCallType() + "\t" +
-//              "|\t" + reportModel.getStartDate() + "\t" +
-//              "|\t" + reportModel.getEndDate() + "\t" +
-//              "|\t" + reportModel.getDuration() + "\t" +
-//              "|\t" + reportModel.getCost() + "\t|"
-//            );
-//        }
-
-        for(int i = 0; i < userInfo.size(); i++) {
-            System.out.println(
-              "|\t" + reportInfo.get(i).getCallType() + "\t" +
-                "|\t" + reportInfo.get(i).getStartDate() + "\t" +
-                "|\t" + reportInfo.get(i).getEndDate() + "\t" +
-                "|\t" + reportInfo.get(i).getDuration() + "\t" +
-                "|\t" + Math.round(costs.get(i) * PRECISION) / PRECISION + "\t|"
-            );
+        switch(rate) {
+            case "06":
+                costs = new RateCalculation().unlimitedCalculation(userInfo);
+                break;
+            case "03":
+                costs = new RateCalculation().perMinuteCalculation(userInfo);
+                break;
+            case "11":
+                costs = new RateCalculation().basicCalculation(userInfo);
+                break;
+            default:
+                return sb.append("Incorrect rate type :(");
         }
 
-        System.out.println(
-          "----------------------------------------------------------------------------\n" +
-          "|\t\t\t\tTotal Cost: |\t" + reportInfo.get(0).getCost() + " rubles |\n" +
-          "----------------------------------------------------------------------------\n"
-        );
+        sb.append("Tariff index: ").append(userInfo.get(0).getRate()).append("\n");
+        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("Report for phone number ").append(userInfo.get(0).getPhoneNumber()).append(":\n");
+        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("| Call Type |\t\t\tStart Time\t\t\t\t|\t\t\tEnd Time\t\t\t\t|\tDuration\t|\tCost\t|\n");
+        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+
+        for(int i = 0; i < userInfo.size(); i++) {
+            Duration duration = Duration.ofMillis(userInfo.get(i).getDuration() * 1000);
+            String timeFormat = String.format("%02d:%02d:%02d", duration.toHours(), duration.toMinutesPart(), duration.toSecondsPart());
+
+            sb.append("|\t").append(userInfo.get(i).getCallType()).append("\t\t");
+            sb.append("|\t").append(userInfo.get(i).getStartDate()).append("\t");
+            sb.append("|\t").append(userInfo.get(i).getEndDate()).append("\t");
+            sb.append("|\t").append(timeFormat).append("\t");
+            sb.append("|\t").append(Math.round(costs.get(i) * PRECISION) / PRECISION).append("\t|\n");
+        }
+
+        double totalCost = costs.stream()
+          .mapToDouble(Double::doubleValue)
+          .sum();
+
+        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("|\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tTotal Cost: |\t\t\t")
+          .append(Math.round(totalCost * PRECISION) / PRECISION).append(" rubles \t|\n");
+        sb.append("-----------------------------------------------------------------------------------------------------------------\n");
+        sb.append("\t\t\tPowered by Vyacheslav Seleznev");
+
+        return sb;
+    }
+
+    public void writeToFile() {
+        File file = new File(URL);
+        StringBuilder sb;
+
+        if(userInfo == null || userInfo.size() == 0)
+            sb = new StringBuilder("Not enough data to generate a report :(");
+        else
+            sb = prepareData(userInfo.get(0).getRate());
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.append(sb);
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -14,8 +14,6 @@ public class RateCalculation {
     private static final double PER_MINUTE_PRICE = 1.5;
     private static final double BASIC_PRICE = 0.5;
 
-    private static final double PRECISION = 1000;
-
     private double unlimitedRate(double seconds, boolean higherThanLimit) {
         if(!higherThanLimit)
             return (seconds * UNLIMITED_PRICE) / (LIMIT_TIME_FOR_UNLIMITED * 60);

@@ -8,10 +8,10 @@ public class UserInfoModel {
     private String callType;
     private Date startDate;
     private Date endDate;
-    private double duration;
+    private long duration;
     private String rate;
 
-    public UserInfoModel(String phoneNumber, String callType, Date startDate, Date endDate, double duration,
+    public UserInfoModel(String phoneNumber, String callType, Date startDate, Date endDate, long duration,
                          String rate) {
         this.phoneNumber = phoneNumber;
         this.callType = callType;
@@ -53,11 +53,11 @@ public class UserInfoModel {
         this.endDate = endDate;
     }
 
-    public double getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(double duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

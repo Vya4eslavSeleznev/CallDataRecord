@@ -3,6 +3,7 @@ package parser;
 import model.UserInfoModel;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,15 +16,21 @@ import java.util.concurrent.TimeUnit;
 
 public class FileParser {
 
-    private static final String URL = "src//main//java//data//cdr.txt";
+    private static final String URL = "data/cdr.txt";
 
     public List<UserInfoModel> findUserInfo(String phoneNumber) throws IOException {
+        File file = new File(URL);
+
+        if (file.length() == 0) {
+            System.out.println("File is empty :(");
+            return null;
+        }
+
         BufferedReader reader = Files.newBufferedReader(Paths.get(URL));
         StringBuilder currentLine = new StringBuilder(reader.readLine());
         List<UserInfoModel> userInfo = new ArrayList<>();
 
         while(!currentLine.toString().equals("null")) {
-
             if(phoneNumber.equals(currentLine.substring(4, 15))) {
                 Date startDate = stringToDate(currentLine.substring(17, 31));
                 Date endDate = stringToDate(currentLine.substring(33, 47));
@@ -33,7 +40,7 @@ public class FileParser {
                   currentLine.substring(0, 2),
                   startDate,
                   endDate,
-                  getDateDiff(startDate, endDate),
+                  (long) getDateDiff(startDate, endDate),
                   currentLine.substring(49, 51)
                 ));
             }
